@@ -20,7 +20,7 @@ segment <- function(image, spatial_radius = 6, range_radius = 4.5, min_density =
   image_vector <- as.integer(image_array)
   
   result <- meanshift(image_vector, dims, spatial_radius, range_radius, min_density, speedup_level)
-  result$dims <- dims  # Add the dimensions to the result
+  result$dims <- dims  
   
   segmented_image <- result$segmentedImage
   
