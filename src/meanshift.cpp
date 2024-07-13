@@ -78,15 +78,7 @@ List meanshift(IntegerVector array, IntegerVector dim, int radiusS,
   delete[] tmpModes;
   delete[] tmpModePointCounts;
 
-  // Convert segmented image back to IntegerVector
-  IntegerVector segmentedImageInt(totalSize);
-  for (int i = 0; i < totalSize; ++i) {
-    segmentedImageInt[i] = segmentedImage[i];
-  }
-
-  // Return a list with the segmented image, the label image, and the number of
-  // regions
-  return List::create(Named("segmentedImage") = segmentedImageInt,
+  return List::create(Named("segmentedImage") = segmentedImage,
                       Named("labelImage") = labelImage,
                       Named("nbRegions") = nbRegions);
 }
