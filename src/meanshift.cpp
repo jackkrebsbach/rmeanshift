@@ -1,5 +1,6 @@
 #include "core/msImageProcessor.h"
 #include <Rcpp.h>
+#include <vector>
 
 using namespace Rcpp;
 
@@ -26,6 +27,12 @@ List meanshift(IntegerVector array, IntegerVector dim, int radiusS,
   }
 
   int nbDimensions = dim.size();
+  Rcout << "Dimensions: " << nbDimensions << std::endl;
+  Rcout << "Dim 0: " << dim[0] << " Dim 1: " << dim[1];
+  if (nbDimensions == 3) {
+    Rcout << " Dim 2: " << dim[2];
+  }
+  Rcout << std::endl;
 
   if (nbDimensions != 2 && nbDimensions != 3) {
     stop("Array must be 2-dimensional (gray scale image) or 3-dimensional (RGB "
@@ -37,24 +44,45 @@ List meanshift(IntegerVector array, IntegerVector dim, int radiusS,
 
   // Define the image based on its dimensions
   if (nbDimensions == 2) {
+    // Grayscale image
+    Rcout << "Defining image as GRAYSCALE with dimensions: " << dim[0] << "x"
+          << dim[1] << std::endl;
     imageSegmenter.DefineImage((unsigned char *)array.begin(), GRAYSCALE,
                                dim[0], dim[1]);
   } else if (nbDimensions == 3 && dim[2] == 3) {
-    imageSegmenter.DefineImage((unsigned char *)array.begin(), COLOR, dim[0],
-                               dim[1]);
+    // RGB image
+    Rcout << "Defining image as COLOR (RGB) with dimensions: " << dim[0] << "x"
+          << dim[1] << std::endl;
+
+    // Ensure the data is correctly ordered for the DefineImage function
+    int totalSize = dim[0] * dim[1] * dim[2];
+    std::vector<unsigned char> imageData(totalSize);
+    for (int i = 0; i < totalSize; ++i) {
+      imageData[i] = static_cast<unsigned char>(
+          array[i] & 0xFF); // Ensure data is within unsigned char range
+    }
+
+    imageSegmenter.DefineImage(imageData.data(), COLOR, dim[0], dim[1]);
   } else {
     stop("Unsupported dimensions for the image.");
   }
 
   // Create output images
   // The segmented image should have the same size as the input image
-  int totalSize = array.size();
-  IntegerVector segmentedImage(totalSize);
+  int totalSize = dim[0] * dim[1] * (nbDimensions == 3 ? dim[2] : 1);
+  std::vector<unsigned char> segmentedImage(totalSize);
   IntegerVector labelImage(dim[0] * dim[1]);
 
   // Segment the image
   imageSegmenter.Segment(radiusS, radiusR, minDensity, speedUpLevel);
-  imageSegmenter.GetResults((unsigned char *)segmentedImage.begin());
+  imageSegmenter.GetResults(segmentedImage.data());
+
+  // Log the results
+  Rcout << "Segmented Image (first few values):" << std::endl;
+  for (int i = 0; i < 100 && i < totalSize; ++i) {
+    Rcout << (int)segmentedImage[i] << " ";
+  }
+  Rcout << std::endl;
 
   // Get labels and number of regions
   int *tmpLabels;
@@ -69,9 +97,15 @@ List meanshift(IntegerVector array, IntegerVector dim, int radiusS,
   delete[] tmpModes;
   delete[] tmpModePointCounts;
 
+  // Convert segmented image back to IntegerVector
+  IntegerVector segmentedImageInt(totalSize);
+  for (int i = 0; i < totalSize; ++i) {
+    segmentedImageInt[i] = segmentedImage[i];
+  }
+
   // Return a list with the segmented image, the label image, and the number of
   // regions
-  return List::create(Named("segmentedImage") = segmentedImage,
+  return List::create(Named("segmentedImage") = segmentedImageInt,
                       Named("labelImage") = labelImage,
                       Named("nbRegions") = nbRegions);
 }
