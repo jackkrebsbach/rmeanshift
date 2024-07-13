@@ -10,24 +10,25 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// segment
-Rcpp::List segment(Rcpp::NumericMatrix image, int spatialRadius, double rangeRadius, int minDensity, int speedUp);
-RcppExport SEXP _rmeanshift_segment(SEXP imageSEXP, SEXP spatialRadiusSEXP, SEXP rangeRadiusSEXP, SEXP minDensitySEXP, SEXP speedUpSEXP) {
+// meanshift
+List meanshift(IntegerVector array, IntegerVector dim, int radiusS, double radiusR, unsigned int minDensity, unsigned int speedUp);
+RcppExport SEXP _rmeanshift_meanshift(SEXP arraySEXP, SEXP dimSEXP, SEXP radiusSSEXP, SEXP radiusRSEXP, SEXP minDensitySEXP, SEXP speedUpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type image(imageSEXP);
-    Rcpp::traits::input_parameter< int >::type spatialRadius(spatialRadiusSEXP);
-    Rcpp::traits::input_parameter< double >::type rangeRadius(rangeRadiusSEXP);
-    Rcpp::traits::input_parameter< int >::type minDensity(minDensitySEXP);
-    Rcpp::traits::input_parameter< int >::type speedUp(speedUpSEXP);
-    rcpp_result_gen = Rcpp::wrap(segment(image, spatialRadius, rangeRadius, minDensity, speedUp));
+    Rcpp::traits::input_parameter< IntegerVector >::type array(arraySEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type dim(dimSEXP);
+    Rcpp::traits::input_parameter< int >::type radiusS(radiusSSEXP);
+    Rcpp::traits::input_parameter< double >::type radiusR(radiusRSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type minDensity(minDensitySEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type speedUp(speedUpSEXP);
+    rcpp_result_gen = Rcpp::wrap(meanshift(array, dim, radiusS, radiusR, minDensity, speedUp));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rmeanshift_segment", (DL_FUNC) &_rmeanshift_segment, 5},
+    {"_rmeanshift_meanshift", (DL_FUNC) &_rmeanshift_meanshift, 6},
     {NULL, NULL, 0}
 };
 

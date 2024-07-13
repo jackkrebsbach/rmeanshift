@@ -1,63 +1,60 @@
 #include "core/msImageProcessor.h"
 #include <Rcpp.h>
 
+using namespace Rcpp;
+
 // [[Rcpp::export]]
-Rcpp::List segment(Rcpp::NumericMatrix image, int spatialRadius,
-                   double rangeRadius, int minDensity, int speedUp = 2) {
-  // Input validation
-  if (spatialRadius < 0) {
-    Rcpp::stop("Spatial radius must be greater or equal to zero");
+List meanshift(IntegerVector array, IntegerVector dim, int radiusS,
+               double radiusR, unsigned int minDensity,
+               unsigned int speedUp = 2) {
+  // Check input arguments
+  if (radiusS < 0) {
+    stop("Spatial radius must be greater or equal to zero");
   }
-  if (rangeRadius < 0.) {
-    Rcpp::stop("Range radius must be greater or equal to zero");
+
+  if (radiusR < 0.0) {
+    stop("Range radius must be greater or equal to zero");
   }
+
   if (minDensity < 0) {
-    Rcpp::stop("Minimum density must be greater or equal to zero");
+    stop("Minimum density must be greater or equal to zero");
   }
-  if (speedUp < 0 || speedUp > 2) {
-    Rcpp::stop("Speedup level must be 0 (no speedup), 1 (medium speedup), or 2 "
-               "(high speedup)");
+
+  if (speedUp > 2) {
+    stop("Speedup level must be 0 (no speedup), 1 (medium speedup), or 2 (high "
+         "speedup)");
+  }
+
+  int nbDimensions = dim.size();
+
+  if (nbDimensions != 2 && nbDimensions != 3) {
+    stop("Array must be 2-dimensional (gray scale image) or 3-dimensional (RGB "
+         "color image)");
   }
 
   msImageProcessor imageSegmenter;
-  SpeedUpLevel speedUpLevel;
+  SpeedUpLevel speedUpLevel = static_cast<SpeedUpLevel>(speedUp);
 
-  // Set speedup level
-  switch (speedUp) {
-  case 0:
-    speedUpLevel = NO_SPEEDUP;
-    break;
-  case 1:
-    speedUpLevel = MED_SPEEDUP;
-    break;
-  case 2:
-    speedUpLevel = HIGH_SPEEDUP;
-    break;
-  default:
-    speedUpLevel = HIGH_SPEEDUP;
+  // Define the image based on its dimensions
+  if (nbDimensions == 2) {
+    imageSegmenter.DefineImage((unsigned char *)array.begin(), GRAYSCALE,
+                               dim[0], dim[1]);
+  } else if (nbDimensions == 3 && dim[2] == 3) {
+    imageSegmenter.DefineImage((unsigned char *)array.begin(), COLOR, dim[0],
+                               dim[1]);
+  } else {
+    stop("Unsupported dimensions for the image.");
   }
 
-  // Determine if the image is grayscale or color
-  bool isColor = (image.ncol() == 3);
-  int width = image.nrow();
-  int height = isColor ? image.ncol() / 3 : image.ncol();
+  // Create output images
+  // The segmented image should have the same size as the input image
+  int totalSize = array.size();
+  IntegerVector segmentedImage(totalSize);
+  IntegerVector labelImage(dim[0] * dim[1]);
 
-  // Convert R matrix to unsigned char array
-  std::vector<unsigned char> inputImage(width * height * (isColor ? 3 : 1));
-  for (int i = 0; i < inputImage.size(); ++i) {
-    inputImage[i] =
-        static_cast<unsigned char>(std::max(0.0, std::min(255.0, image[i])));
-  }
-
-  // Define and segment the image
-  imageSegmenter.DefineImage(inputImage.data(), isColor ? COLOR : GRAYSCALE,
-                             height, width);
-  imageSegmenter.Segment(spatialRadius, rangeRadius, minDensity, speedUpLevel);
-
-  // Get segmented image
-  Rcpp::NumericMatrix segmentedImage(width, height * (isColor ? 3 : 1));
-  imageSegmenter.GetResults(
-      reinterpret_cast<unsigned char *>(segmentedImage.begin()));
+  // Segment the image
+  imageSegmenter.Segment(radiusS, radiusR, minDensity, speedUpLevel);
+  imageSegmenter.GetResults((unsigned char *)segmentedImage.begin());
 
   // Get labels and number of regions
   int *tmpLabels;
@@ -65,14 +62,16 @@ Rcpp::List segment(Rcpp::NumericMatrix image, int spatialRadius,
   int *tmpModePointCounts;
   int nbRegions =
       imageSegmenter.GetRegions(&tmpLabels, &tmpModes, &tmpModePointCounts);
+  std::copy(tmpLabels, tmpLabels + dim[0] * dim[1], labelImage.begin());
 
-  Rcpp::IntegerMatrix labelImage(width, height);
-  std::memcpy(labelImage.begin(), tmpLabels, width * height * sizeof(int));
+  // Clean up
+  delete[] tmpLabels;
+  delete[] tmpModes;
+  delete[] tmpModePointCounts;
 
-  // No need to delete tmpLabels, tmpModes, tmpModePointCounts as they are
-  // managed by msImageProcessor
-
-  return Rcpp::List::create(Rcpp::Named("segmented") = segmentedImage,
-                            Rcpp::Named("labels") = labelImage,
-                            Rcpp::Named("nb_regions") = nbRegions);
+  // Return a list with the segmented image, the label image, and the number of
+  // regions
+  return List::create(Named("segmentedImage") = segmentedImage,
+                      Named("labelImage") = labelImage,
+                      Named("nbRegions") = nbRegions);
 }
