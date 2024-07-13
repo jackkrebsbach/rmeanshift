@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 segment <- function(image, spatialRadius, rangeRadius, minDensity, speedUp = 2L) {
-    .Call('_rmeanshift_segment', PACKAGE = 'rmeanshift', image, spatialRadius, rangeRadius, minDensity, speedUp)
+    .Call(`_rmeanshift_segment`, image, spatialRadius, rangeRadius, minDensity, speedUp)
 }
 

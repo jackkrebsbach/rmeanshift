@@ -2,12 +2,6 @@ CXX_STD = CXX11
 PKG_CXXFLAGS = -I../inst/include -Icore -Wno-everything
 PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
-OBJECTS = meanshift.o core/msImageProcessor.o core/RAList.o
+SOURCES = meanshift.cpp $(wildcard core/*.cpp)
 
-# Rule to compile files in the core directory with all warnings disabled
-core/%.o: core/%.cpp
-	$(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) -w -c $< -o $@
-
-# Default rule for other source files
-%.o: %.cpp
-	$(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) -c $< -o $@
+OBJECTS = $(SOURCES:.cpp=.o)
