@@ -6,7 +6,7 @@ devtools::document()
 Rcpp::compileAttributes()
 devtools::load_all()
 
-segment <- function(image, spatial_radius = 4.5, range_radius = 10, min_density = 5, speedup_level = 2) {
+segment <- function(image, spatial_radius = 6, range_radius = 4.5, min_density = 50, speedup_level = 2) {
   if (inherits(image, "SpatRaster")) {
     image_array <- as.array(image)
     dims <- dim(image_array)
@@ -25,7 +25,7 @@ segment <- function(image, spatial_radius = 4.5, range_radius = 10, min_density 
   segmented_image <- result$segmentedImage
   
   if (length(dims) == 2) {
-    segmented_matrix <- matrix(segmented_image, nrow = dims[1], ncol = dims[2], byrow = FALSE)
+    segmented_matrix <- matrix(segmented_image, nrow = dims[1], ncol = dims[2], byrow = TRUE)
   } else if (length(dims) == 3) {
     segmented_matrix <- array(segmented_image, dim = dims)
   }
