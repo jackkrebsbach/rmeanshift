@@ -11,24 +11,23 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // meanshift
-List meanshift(IntegerVector array, IntegerVector dim, int radiusS, double radiusR, unsigned int minDensity, unsigned int speedUp);
-RcppExport SEXP _rmeanshift_meanshift(SEXP arraySEXP, SEXP dimSEXP, SEXP radiusSSEXP, SEXP radiusRSEXP, SEXP minDensitySEXP, SEXP speedUpSEXP) {
+List meanshift(NumericVector array, int radiusS, double radiusR, unsigned int minDensity, unsigned int speedUp);
+RcppExport SEXP _rmeanshift_meanshift(SEXP arraySEXP, SEXP radiusSSEXP, SEXP radiusRSEXP, SEXP minDensitySEXP, SEXP speedUpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type array(arraySEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type dim(dimSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type array(arraySEXP);
     Rcpp::traits::input_parameter< int >::type radiusS(radiusSSEXP);
     Rcpp::traits::input_parameter< double >::type radiusR(radiusRSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type minDensity(minDensitySEXP);
     Rcpp::traits::input_parameter< unsigned int >::type speedUp(speedUpSEXP);
-    rcpp_result_gen = Rcpp::wrap(meanshift(array, dim, radiusS, radiusR, minDensity, speedUp));
+    rcpp_result_gen = Rcpp::wrap(meanshift(array, radiusS, radiusR, minDensity, speedUp));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rmeanshift_meanshift", (DL_FUNC) &_rmeanshift_meanshift, 6},
+    {"_rmeanshift_meanshift", (DL_FUNC) &_rmeanshift_meanshift, 5},
     {NULL, NULL, 0}
 };
 

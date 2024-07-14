@@ -152,15 +152,15 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   Uploads a
-  // custom kernel into the private data    |// |   members of the mean shift
-  // class. This kernel is  |// |   used by the mean shift class to perform mean
+  //custom kernel into the private data    |// |   members of the mean shift
+  //class. This kernel is  |// |   used by the mean shift class to perform mean
   //|// |   shift.                                           |// | |// |   In
-  // order to create a valid kernel the following  |// |   argumens must be
-  // provided this method:           |// | |// |   <* kernel *> |// |   A one
-  // dimensional array of type kernelType used  |// |   to specify the kernel
-  // type (Uniform, Gaussian,   |// |   or User Defined) of a given subspace of
-  // the input|// |   set. Entry i of kernel correlates to the i-th    |// |
-  // subspace of the input data set.                  |// | |// |   <* h *> |//
+  //order to create a valid kernel the following  |// |   argumens must be
+  //provided this method:           |// | |// |   <* kernel *> |// |   A one
+  //dimensional array of type kernelType used  |// |   to specify the kernel
+  //type (Uniform, Gaussian,   |// |   or User Defined) of a given subspace of
+  //the input|// |   set. Entry i of kernel correlates to the i-th    |// |
+  //subspace of the input data set.                  |// | |// |   <* h *> |//
   //|   A one dimensional array of floating point numb-  |//
   //|   ers that are used to normalize the input data    |//
   //|   set, each bandwidth specifying the relative imp- |//
@@ -189,27 +189,40 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   Each
-  // subspace specified as User Defined is un-   |// |   quely defined by a
-  // correlating weight function   |// |   which is user defined. |// | |// | A
-  // weight function w(u) exhibits the following    |// |   properties: |// |
-  // |// |   (1) w(u) = w(-u)                                 |// |   (2) u =
-  //((x_i-y_k)^2)/(h^2) (see docs)           |// |   (3) w(u) = 0, for |u| >=
-  // halfWindow              |// | |// |   To add a weight function to the mean
-  // shift class |// |   the following must be specified:                 |// |
-  //|// |   <* g() *>                                        |// |   A pointer
-  // the weight function w(u) exhibiting    |// |   the above properties. |// |
-  //|// |   <* halfWindow *>                                 |// |   A floating
-  // point number specifying where w(u)    |// |   exists (is non zero). [See
-  // Property 3 Above]     |// | |// |   <* sampleNumber *> |// |   An integer
-  // used to specify the number of samples |// |   used to describe w(u). Linear
-  // interpolation is   |// |   used during the mean shift calculation using the
-  //|// |   the samples of w(u) to determine the value of w  |// |   at a
-  // location |u| < halfWindow.                  |// | |// |   <* subspace *>
-  // |// |   An integer specifying which kernel w(u) defines. |// | |// | Weight
-  //functions are accounted for every time    |// |   a new kernel is created.
-  //|// |                                                    |// |   If a weight
-  //function is added to non-existing    |// |   subspace of the input data set
-  //(example: the    |// |   input data set containes 3 subspaces and this |//
+  //subspace specified as User Defined is un-   |// |   quely defined by a
+  //correlating weight function   |// |   which is user defined. |// | |// |   A
+  //weight function w(u) exhibits the following    |// |   properties: |// | |//
+  //|   (1) w(u) = w(-u)                                 |//
+  //|   (2) u = ((x_i-y_k)^2)/(h^2) (see docs)           |//
+  //|   (3) w(u) = 0, for |u| >= halfWindow              |//
+  //|                                                    |//
+  //|   To add a weight function to the mean shift class |//
+  //|   the following must be specified:                 |//
+  //|                                                    |//
+  //|   <* g() *>                                        |//
+  //|   A pointer the weight function w(u) exhibiting    |//
+  //|   the above properties.                            |//
+  //|                                                    |//
+  //|   <* halfWindow *>                                 |//
+  //|   A floating point number specifying where w(u)    |//
+  //|   exists (is non zero). [See Property 3 Above]     |//
+  //|                                                    |//
+  //|   <* sampleNumber *>                               |//
+  //|   An integer used to specify the number of samples |//
+  //|   used to describe w(u). Linear interpolation is   |//
+  //|   used during the mean shift calculation using the |//
+  //|   the samples of w(u) to determine the value of w  |//
+  //|   at a location |u| < halfWindow.                  |//
+  //|                                                    |//
+  //|   <* subspace *>                                   |//
+  //|   An integer specifying which kernel w(u) defines. |//
+  //|                                                    |//
+  //|   Weight functions are accounted for every time    |//
+  //|   a new kernel is created.                         |//
+  //|                                                    |//
+  //|   If a weight function is added to non-existing    |//
+  //|   subspace of the input data set  (example: the    |//
+  //|   input data set containes 3 subspaces and this    |//
   //|   method is given subspace = 4) then the weight    |//
   //|   defintion will simply be ignored by the mean     |//
   //|   shift class.                                     |//
@@ -222,7 +235,7 @@ public:
   //|                                                    |//
   //|	Usage: |// |   ======
   //|// |   AddWeightFunction(g(u)        , halfWindow,      |// | sampleNumber,
-  // subspace);       |// | |//
+  //subspace);       |// | |//
   //<--------------------------------------------------->|//
   //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
 
@@ -237,9 +250,9 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   Removes all
-  // user defined weight functions added  |// |   using method
-  // AddWeightFunction() from the        |// |   private data members of the
-  // mean shift class.    |// | |//
+  //user defined weight functions added  |// |   using method
+  //AddWeightFunction() from the        |// |   private data members of the mean
+  //shift class.    |// |                                                    |//
   //<--------------------------------------------------->|//
   //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
 
@@ -258,14 +271,14 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   Uploads a
-  // one dimensional array containing L     |// |   N-dimensional data points
-  // into the mean shift    |// |   class. |// | |// |   An input data set is
-  // specified by:               |// | |// |   <* x *> |// |   A pointer to a
-  // floating point array.             |// | |// |   <* L *> |// |   The number
-  // of data points stored by x.           |// | |// |   <* N *> |// |   The
-  // dimension of the data points stored by x.    |// | |// |   The input x has
-  // the following format:            |// | |// |   x = <x11, x12,..., x1N,...,
-  // xL1, xL2,..., xLN>   |// | |//
+  //one dimensional array containing L     |// |   N-dimensional data points
+  //into the mean shift    |// |   class. |// | |// |   An input data set is
+  //specified by:               |// | |// |   <* x *> |// |   A pointer to a
+  //floating point array.             |// | |// |   <* L *> |// |   The number
+  //of data points stored by x.           |// | |// |   <* N *> |// |   The
+  //dimension of the data points stored by x.    |// | |// |   The input x has
+  //the following format:            |// | |// |   x = <x11, x12,..., x1N,...,
+  //xL1, xL2,..., xLN>   |// | |//
   //<--------------------------------------------------->|//
   //|                                                    |//
   //|	Usage: |// |   ======
@@ -284,12 +297,12 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   Use this
-  // method to specify define an input data  |// |   set defined on a lattice.
+  //method to specify define an input data  |// |   set defined on a lattice.
   //|// |                                                    |// |   The
-  // arguments of this method are:                |// | |// |   <* x *> |// | A
-  // pointer to a floating point array containing   |// |   height*width,
-  // N-dimensional data points.         |// | |// |   <* height *> |// |   An
-  // integer specifying the height of the lattice. |// | |// |   <* width *> |//
+  //arguments of this method are:                |// | |// |   <* x *> |// |   A
+  //pointer to a floating point array containing   |// |   height*width,
+  //N-dimensional data points.         |// | |// |   <* height *> |// |   An
+  //integer specifying the height of the lattice. |// | |// |   <* width *> |//
   //|   An integer specifying the width of the lattice.  |//
   //|                                                    |//
   //|   <* N *>                                          |//
@@ -318,14 +331,17 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   Uploads
-  // weight map specifying for each data      |// |   point a value used to
-  // weight the uniform kernel  |// |   when computing mean shift. |// | |// |
-  // The arguments to this method are:                |// | |// |   <* weightMap
+  //weight map specifying for each data      |// |   point a value used to
+  //weight the uniform kernel  |// |   when computing mean shift. |// | |// |
+  //The arguments to this method are:                |// | |// |   <* weightMap
   //*>                                  |// |   A floating point array of size L
-  // specifying for  |// |   each data point a weight. |// | |// |   Note:
-  // DefineLInput must be called prior to call- |// |         ing this method.
-  // DefineLInput is used to   |// |         define the dimensions of the input
-  // data    |// |         set.                                       |// | |//
+  //specifying for  |// |   each data point a weight.                        |//
+  //|                                                    |//
+  //|   Note: DefineLInput must be called prior to call- |//
+  //|         ing this method. DefineLInput is used to   |//
+  //|         define the dimensions of the input data    |//
+  //|         set.                                       |//
+  //|                                                    |//
   //|                                                    |//
   //|  The weight map is used to weight the uniform      |//
   //|  kernel used to computing meanshift on a data      |//
@@ -354,8 +370,8 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   Removes
-  // lattice weight map. An error is NOT      |// |   flagged if a weight map
-  // was not defined prior    |// |   to calling this method. |// | |//
+  //lattice weight map. An error is NOT      |// |   flagged if a weight map was
+  //not defined prior    |// |   to calling this method. |// | |//
   //<--------------------------------------------------->|//
   //|                                                    |//
   //|	Usage: |// |   ======
@@ -378,15 +394,16 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   If a kernel
-  // is created and input is uploaded,    |// |   this method calcualtes the
-  // mean shift vector,    |// |   Mh, at specific data point yk. |// | |// |
-  // The arguments of this method are:                |// | |// |   <* Mh *> |//
-  // | An array of N doubles storing the N dimensional  |// |   mean shift
-  // vector. |// |                                                    |// |   <*
-  // yk *>                                         |// |   An array of N doubles
-  // storing the N dimensional  |// |   data point where the mean shift vector
-  // is to be  |// |   calculate.                                       |// |
-  // |//
+  //is created and input is uploaded,    |// |   this method calcualtes the mean
+  //shift vector,    |// |   Mh, at specific data point yk. |// | |// |   The
+  //arguments of this method are:                |// | |// |   <* Mh *> |// | An
+  //array of N doubles storing the N dimensional  |// |   mean shift vector. |//
+  //|                                                    |//
+  //|   <* yk *>                                         |//
+  //|   An array of N doubles storing the N dimensional  |//
+  //|   data point where the mean shift vector is to be  |//
+  //|   calculate.                                       |//
+  //|                                                    |//
   //<--------------------------------------------------->|//
   //|                                                    |//
   //|	Usage: |// |   ======
@@ -405,19 +422,19 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   If a kernel
-  // is created and input is uploaded,    |// |   this method calcualtes the
-  // mean shift vector,    |// |   Mh, at specific data point yk, assuming that
-  // the
+  //is created and input is uploaded,    |// |   this method calcualtes the mean
+  //shift vector,    |// |   Mh, at specific data point yk, assuming that the
   //|// |   data set exhists on a height x width two dim-    |// |   ensional
-  // lattice.                                |// | |// |   The arguments of this
-  // method are:                |// | |// |   <* Mh *> |// |   An array of N
-  // doubles storing the N dimensional  |// |   mean shift vector. |// | |// |
-  // <* yk *>                                         |// |   An array of N
-  // doubles storing the N dimensional  |// |   data point where the mean shift
-  // vector is to be  |// |   calculate. |// | |// | The height and width of the
-  // lattice must be      |// |   specified using DefineLattice() method. If
-  // this  |// |   is not performed prior to calling this method a  |// | fatal
-  // error will be flagged.                     |// | |//
+  //lattice.                                |// | |// |   The arguments of this
+  //method are:                |// | |// |   <* Mh *> |// |   An array of N
+  //doubles storing the N dimensional  |// |   mean shift vector. |// | |// | <*
+  //yk *>                                         |// |   An array of N doubles
+  //storing the N dimensional  |// |   data point where the mean shift vector is
+  //to be  |// |   calculate.                                       |// | |// |
+  //The height and width of the lattice must be      |// |   specified using
+  //DefineLattice() method. If this  |// |   is not performed prior to calling
+  //this method a  |// |   fatal error will be flagged.                     |//
+  //|                                                    |//
   //<--------------------------------------------------->|//
   //|                                                    |//
   //|	Usage: |// |   ======
@@ -436,15 +453,13 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   If a kernel
-  // is created and input is uploaded,    |// |   this method calcualtes the
-  // mode of a specified   |// |   data point yk. |// | |// |   The arguments of
-  // this method are:                |// | |// |   <* mode *> |// |   An array
-  // of N doubles storing the N dimensional  |// |   mode of yk. |// | |// | <*
-  // yk
+  //is created and input is uploaded,    |// |   this method calcualtes the mode
+  //of a specified   |// |   data point yk. |// | |// |   The arguments of this
+  //method are:                |// | |// |   <* mode *> |// |   An array of N
+  //doubles storing the N dimensional  |// |   mode of yk. |// | |// |   <* yk
   //*>                                         |// |   An array of N doubles
-  // storing the N dimensional  |// |   data point where the mean shift vector
-  // is to be  |// |   calculate.                                       |// |
-  // |//
+  //storing the N dimensional  |// |   data point where the mean shift vector is
+  //to be  |// |   calculate.                                       |// | |//
   //<--------------------------------------------------->|//
   //|                                                    |//
   //|	Usage: |// |   ======
@@ -463,17 +478,24 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   If a kernel
-  // is created and input is uploaded,    |// |   this method calcualtes the
-  // mode of a specified   |// |   data point yk, assuming that the data set |//
-  // | exhists on a height x width two dimensional      |// |   lattice. |// |
-  // |// |   The arguments of this method are:                |// | |// |   <*
-  // mode *>                                       |// |   An array of N doubles
-  // storing the N dimensional  |// |   mode of yk. |// | |// |   <* yk *> |// |
-  // An array of N doubles storing the N dimensional  |// |   data point where
-  // the mean shift vector is to be  |// |   calculate. |// | |// |   The height
-  // and width of the lattice must be      |// |   specified using
-  // DefineLattice() method. If this  |// |   is not performed prior to calling
-  // this method a  |// |   fatal error will be flagged.                     |//
+  //is created and input is uploaded,    |// |   this method calcualtes the mode
+  //of a specified   |// |   data point yk, assuming that the data set |// |
+  //exhists on a height x width two dimensional      |// |   lattice. |// | |//
+  //|   The arguments of this method are:                |//
+  //|                                                    |//
+  //|   <* mode *>                                       |//
+  //|   An array of N doubles storing the N dimensional  |//
+  //|   mode of yk.                                      |//
+  //|                                                    |//
+  //|   <* yk *>                                         |//
+  //|   An array of N doubles storing the N dimensional  |//
+  //|   data point where the mean shift vector is to be  |//
+  //|   calculate.                                       |//
+  //|                                                    |//
+  //|   The height and width of the lattice must be      |//
+  //|   specified using DefineLattice() method. If this  |//
+  //|   is not performed prior to calling this method a  |//
+  //|   fatal error will be flagged.                     |//
   //|                                                    |//
   //<--------------------------------------------------->|//
   //|                                                    |//
@@ -493,8 +515,8 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// | ErrorMessage
-  // is an error message that is set by  |// |   a mean shift library class when
-  // an error occurs. |// | |//
+  //is an error message that is set by  |// |   a mean shift library class when
+  //an error occurs. |// | |//
   //<--------------------------------------------------->|//
   //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
 
@@ -505,11 +527,11 @@ public:
   //|                                                    |//
   //|	Description: |// |	============
   //|// |                                                    |// |   ErrorStatus
-  // indicates if an error has occured as |// |   a result of improper use of a
-  // mean shift library |// |   class method or because of insufficient resour-
+  //indicates if an error has occured as |// |   a result of improper use of a
+  //mean shift library |// |   class method or because of insufficient resour-
   //|// |   ces. ErrorStatus is set to EL_ERROR (ErrorStatus |// |   = 1) if an
-  // error has occured. If no error occur- |// |   ed when calling a particular
-  // method ErrorStatus  |// |   is set to EL_OKAY (ErrorStatus = 0). |// | |//
+  //error has occured. If no error occur- |// |   ed when calling a particular
+  //method ErrorStatus  |// |   is set to EL_OKAY (ErrorStatus = 0). |// | |//
   //<--------------------------------------------------->|//
   //--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//
 

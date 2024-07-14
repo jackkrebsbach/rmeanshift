@@ -152,16 +152,14 @@ public:
   // between 0 and 1 - 1 indica- |// |   ting the presence of an edge and 0 the
   // absense   |// |   of an edge.                                      |// |
   // |// |   The arguments to this method are:                |// | |// |   <*
-  // weightMap *>                                  |// |   A floating point
-  // array of size (height x width)  |// |   specifying at location (i,j) the
-  // edge strength   |// |   of pixel (i,j). (e.g. pixel (i,j) has an edge |// |
-  // strength of weightMap[j*width+i]).               |// | |// |   <* epsilon
-  // *>
+  //weightMap *>                                  |// |   A floating point array
+  //of size (height x width)  |// |   specifying at location (i,j) the edge
+  //strength   |// |   of pixel (i,j). (e.g. pixel (i,j) has an edge    |// |
+  //strength of weightMap[j*width+i]).               |// | |// |   <* epsilon *>
   //|// |   A floating point number specifying the threshold |// |   used to
-  // fuse regions during transitive closure.  |// | |// |   Note: DefineImage
-  // must be called prior to call-  |// |         ing this method. DefineImage
-  // is used to    |// |         define the dimensions of the image.        |//
-  // |
+  //fuse regions during transitive closure.  |// | |// |   Note: DefineImage
+  //must be called prior to call-  |// |         ing this method. DefineImage is
+  //used to    |// |         define the dimensions of the image.        |// |
   //|//
   //<--------------------------------------------------->|//
   //|                                                    |//
@@ -395,9 +393,9 @@ public:
   // resulting filtered or segmented im-  |// |   age data after calling
   // Filter() or Segment().    |// | |// |   The arguments to this method are:
   // |// | |// |   <* outputImageData *>                            |// |   A
-  // floating point array containing the vector     |// |   data of the filtered
-  // or segmented image.         |// | |// |   NOTE: If DefineImage was used to
-  // specify the     |// |         the input to this class, outputImageData |//
+  //floating point array containing the vector     |// |   data of the filtered
+  //or segmented image.         |// | |// |   NOTE: If DefineImage was used to
+  //specify the     |// |         the input to this class, outputImageData   |//
   //|         is in the LUV data space.                  |//
   //|                                                    |//
   //<--------------------------------------------------->|//
@@ -422,10 +420,10 @@ public:
   // resulting filtered or segmented im-  |// |   age after calling Filter() or
   // Segment().         |// | |// |   The arguments to this method are: |// |
   // |// |   <* outputImage *>                                |// |   An
-  // unsigned char array containing the RGB        |// |   vector data of the
-  // output image.                 |// | |// |   To obtain the un-converted
-  // (LUV) data space      |// |   output one may use |// |
-  //msImageProcessor::GetRawData().                  |//
+  //unsigned char array containing the RGB        |// |   vector data of the
+  //output image.                 |// | |// |   To obtain the un-converted (LUV)
+  //data space      |// |   output one may use                               |//
+  //|   msImageProcessor::GetRawData().                  |//
   //<--------------------------------------------------->|//
   //|                                                    |//
   //|	Usage: |// |   ======

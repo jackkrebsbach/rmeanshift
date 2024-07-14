@@ -1,45 +1,62 @@
 library(devtools)
 library(terra)
+library(jpeg)
 
 devtools::clean_dll()
 devtools::document()
 Rcpp::compileAttributes()
 devtools::load_all()
 
-segment <- function(image, spatial_radius = 6, range_radius = 4.5, min_density = 50, speedup_level = 2) {
+
+segment <- function(image, spatial_radius = 6, range_radius = 4.5, min_density = 60, speedup = 2) {
   if (inherits(image, "SpatRaster")) {
     image_array <- as.array(image)
-    dims <- dim(image_array)
   } else if (is.matrix(image) || is.array(image)) {
     image_array <- image
-    dims <- dim(image_array)
   } else {
     stop("Unsupported image format. Please provide a SpatRaster, matrix, or array.")
   }
   
-  image_vector <- as.integer(image_array)
+  # Ensure the image data is in the 0-1 range
+  image_array <- (image_array - min(image_array)) / (max(image_array) - min(image_array))
   
-  result <- meanshift(image_vector, dims, spatial_radius, range_radius, min_density, speedup_level)
-  result$dims <- dims  
+  # Get dimensions
+  dims <- dim(image_array)
   
-  segmented_image <- result$segmentedImage
+  # Call the Rcpp function
+  result <- meanshift(image_array, spatial_radius, range_radius, min_density, speedup)
   
+  # Reshape the segmented image
   if (length(dims) == 2) {
-    segmented_matrix <- matrix(segmented_image, nrow = dims[1], ncol = dims[2], byrow = TRUE)
+    segmented_matrix <- matrix(result$segmentedImage, nrow = dims[1], ncol = dims[2])
   } else if (length(dims) == 3) {
-    segmented_matrix <- array(segmented_image, dim = dims)
+    segmented_matrix <- array(result$segmentedImage, dim = dims)
   }
   
-  result$segmentedImage <- terra::rast(segmented_matrix)
+  # Convert to SpatRaster if the input was a SpatRaster
+  if (inherits(image, "SpatRaster")) {
+    result$segmentedImage <- terra::rast(segmented_matrix)
+    crs(result$segmentedImage) <- crs(image)
+  } else {
+    result$segmentedImage <- segmented_matrix
+  }
+  
+  # Reshape the label image
+  result$labelImage <- matrix(result$labelImage, nrow = dims[1], ncol = dims[2])
+  
   return(result)
 }
 
-
-rast <- terra::rast("/Users/krebsbach/Downloads/Pymeanshift example.jpg")
+rast <- terra::rast("/Users/krebsbach/Desktop/example.jpg")
 result <- segment(rast)
 segmented_image <- result$segmentedImage
 
 plotRGB(rast)
 plotRGB(segmented_image)
+
+image_array <- as.array(segmented_image)
+image_array <- image_array / 255
+
+writeJPEG(image_array, "/Users/krebsbach/Desktop/rseg_example.jpg")
 
 
