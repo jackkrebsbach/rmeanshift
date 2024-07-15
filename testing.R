@@ -1,6 +1,5 @@
 library(devtools)
 library(terra)
-library(jpeg)
 
 devtools::clean_dll()
 devtools::document()
@@ -10,7 +9,7 @@ devtools::load_all()
 
 segment <- function(image, spatial_radius = 6, range_radius = 4.5, min_density = 60, speedup = 2) {
   if (inherits(image, "SpatRaster")) {
-    image_array <- as.array(image)
+    image_array <- terra::as.array(image)
   } else if (is.matrix(image) || is.array(image)) {
     image_array <- image
   } else {
