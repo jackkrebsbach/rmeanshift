@@ -40,7 +40,7 @@ List meanshift(NumericVector array, int radiusS, double radiusR,
   std::vector<unsigned char> imageData(height * width * channels);
   for (int i = 0; i < height * width * channels; ++i) {
     imageData[i] = static_cast<unsigned char>(
-        std::min(255.0, std::max(0.0, array[i] * 255.0)));
+        std::max(0, std::min(255, static_cast<int>(array[i]))));
   }
 
   // Define the image
@@ -71,7 +71,7 @@ List meanshift(NumericVector array, int radiusS, double radiusR,
   std::vector<unsigned char> segmentedData(height * width * channels);
   imageSegmenter.GetResults(segmentedData.data());
   for (int i = 0; i < height * width * channels; ++i) {
-    segmentedImage[i] = segmentedData[i];
+    segmentedImage[i] = static_cast<double>(segmentedData[i]);
   }
   segmentedImage.attr("dim") = dim;
 

@@ -17,9 +17,6 @@ segment <- function(image, spatial_radius = 6, range_radius = 4.5, min_density =
     stop("Unsupported image format. Please provide a SpatRaster, matrix, or array.")
   }
   
-  # Ensure the image data is in the 0-1 range
-  image_array <- (image_array - min(image_array)) / (max(image_array) - min(image_array))
-  
   # Get dimensions
   dims <- dim(image_array)
   
@@ -47,16 +44,10 @@ segment <- function(image, spatial_radius = 6, range_radius = 4.5, min_density =
   return(result)
 }
 
-rast <- terra::rast("/Users/krebsbach/Desktop/example.jpg")
+rast <- terra::rast("example.jpg")
 result <- segment(rast)
 segmented_image <- result$segmentedImage
 
 plotRGB(rast)
 plotRGB(segmented_image)
-
-image_array <- as.array(segmented_image)
-image_array <- image_array / 255
-
-writeJPEG(image_array, "/Users/krebsbach/Desktop/rseg_example.jpg")
-
 

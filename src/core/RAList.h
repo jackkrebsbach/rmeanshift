@@ -1,29 +1,28 @@
 /*******************************************************
 
                  Mean Shift Analysis Library
-        =============================================
+	=============================================
 
-        The mean shift library is a collection of routines
-        that use the mean shift algorithm. Using this algorithm,
-        the necessary output will be generated needed
-        to analyze a given input set of data.
+	The mean shift library is a collection of routines
+	that use the mean shift algorithm. Using this algorithm,
+	the necessary output will be generated needed
+	to analyze a given input set of data.
 
   Region Adjacency List:
   =====================
 
-        The Region Adjacency List class is used by the Image
-        Processor class in the construction of a Region Adjacency
-        Matrix, used by	this class to applying transitive closure
-        and to prune spurious regions during image segmentation.
+	The Region Adjacency List class is used by the Image 
+	Processor class in the construction of a Region Adjacency
+	Matrix, used by	this class to applying transitive closure
+	and to prune spurious regions during image segmentation.
 
-        The prototype for the RAList class is provided below. Its
-        defition is provided in "RAList.cc".
+	The prototype for the RAList class is provided below. Its
+	defition is provided in "RAList.cc".
 
 The theory is described in the papers:
 
   D. Comaniciu, P. Meer: Mean Shift: A robust approach toward feature
-                                                                         space
-analysis.
+									 space analysis.
 
   C. Christoudias, B. Georgescu, P. Meer: Synergism in low level vision.
 
@@ -36,55 +35,58 @@ Implemented by Chris M. Christoudias, Bogdan Georgescu
 #ifndef RALIST_H
 #define RALIST_H
 
-// define Region Adjacency List class prototype
+//define Region Adjacency List class prototype
 class RAList {
 
 public:
-  //============================
-  // *** Public Data Members ***
-  //============================
 
-  ////////////RAM Label//////////
-  int label;
+	//============================
+	// *** Public Data Members ***
+	//============================
 
-  ////////////RAM Weight/////////
-  float edgeStrength;
-  int edgePixelCount;
+	////////////RAM Label//////////
+	int		label;
 
-  ////////////RAM Link///////////
-  RAList *next;
+	////////////RAM Weight/////////
+	float	edgeStrength;
+	int		edgePixelCount;
 
-  //=======================
-  // *** Public Methods ***
-  //=======================
+	////////////RAM Link///////////
+	RAList	*next;
 
-  /*/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\*/
-  /* Class Constructor and Destructor */
-  /*\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/*/
+	//=======================
+	// *** Public Methods ***
+	//=======================
 
-  //***Class Constrcutor***
-  RAList(void);
+	/*/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\*/
+	/* Class Constructor and Destructor */
+	/*\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/*/
 
-  //***Class Destructor***
-  ~RAList(void);
+	//***Class Constrcutor***
+	RAList( void );
 
-  /*/\/\/\/\/\/\/\/\/\/\/\/\*/
-  /*  RAM List Manipulation */
-  /*\/\/\/\/\/\/\/\/\/\/\/\/*/
+	//***Class Destructor***
+	~RAList( void );
 
-  // Usage: Insert(entry)
-  int Insert(RAList *); // Insert a region node into the region adjecency list
+	/*/\/\/\/\/\/\/\/\/\/\/\/\*/
+	/*  RAM List Manipulation */
+	/*\/\/\/\/\/\/\/\/\/\/\/\/*/
+
+	//Usage: Insert(entry)
+	int Insert(RAList*);		//Insert a region node into the region adjecency list
 
 private:
-  //=============================
-  // *** Private Data Members ***
-  //=============================
 
-  ///////current and previous pointer/////
-  RAList *cur, *prev;
+	//=============================
+	// *** Private Data Members ***
+	//=============================
 
-  ////////flag///////////
-  unsigned char exists;
+	///////current and previous pointer/////
+	RAList	*cur, *prev;
+
+	////////flag///////////
+	unsigned char exists;
+
 };
 
 #endif
