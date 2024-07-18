@@ -1,2 +1,2 @@
 > [!WARNING]
-> This package is not ready for usage.
+> This package is not ready for usage and is still under development.
