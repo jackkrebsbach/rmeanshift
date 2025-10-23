@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-NumericVector meanshift(NumericVector array, int width, int height, int channels,
+NumericVector meanshift_(NumericVector array, int width, int height, int channels,
                         int radiusS, double radiusR, unsigned int minDensity, unsigned int speedUp = 2) {
 
   unsigned char* imageData = new unsigned char[height * width * channels];
