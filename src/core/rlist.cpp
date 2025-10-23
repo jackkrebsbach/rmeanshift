@@ -1,27 +1,28 @@
 /*******************************************************
 
                  Mean Shift Analysis Library
-	=============================================
+        =============================================
 
 
-	The mean shift library is a collection of routines
-	that use the mean shift algorithm. Using this algorithm,
-	the necessary output will be generated needed
-	to analyze a given input set of data.
+        The mean shift library is a collection of routines
+        that use the mean shift algorithm. Using this algorithm,
+        the necessary output will be generated needed
+        to analyze a given input set of data.
 
   Region List Class:
   =================
 
-	During segmentation, data regions are defined. The 
-	RegionList class provides a mechanism for doing so, as
-	well as defines some basic operations, such as region
-	growing or small region pruning, on the defined regions.
-	It is defined below. Its prototype is given in "region.h".
+        During segmentation, data regions are defined. The
+        RegionList class provides a mechanism for doing so, as
+        well as defines some basic operations, such as region
+        growing or small region pruning, on the defined regions.
+        It is defined below. Its prototype is given in "region.h".
 
 The theory is described in the papers:
 
   D. Comaniciu, P. Meer: Mean Shift: A robust approach toward feature
-									 space analysis.
+                                                                         space
+analysis.
 
   C. Christoudias, B. Georgescu, P. Meer: Synergism in low level vision.
 
@@ -31,20 +32,20 @@ and they are is available at:
 Implemented by Chris M. Christoudias, Bogdan Georgescu
 ********************************************************/
 
+#include "rlist.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-#include	"rlist.h"
-#include	<stdio.h>
-#include	<stdlib.h>
-
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      PUBLIC METHODS     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      PUBLIC METHODS
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 
-  /*/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\*/
-  /*** Class Constructor and Destructor ***/
-  /*\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/*/
+/*/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\*/
+/*** Class Constructor and Destructor ***/
+/*\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/*/
 
 /*******************************************************/
 /*Constructor                                          */
@@ -64,40 +65,40 @@ Implemented by Chris M. Christoudias, Bogdan Georgescu
 /*        ialized.                                     */
 /*******************************************************/
 
-RegionList::RegionList(int maxRegions_, int L_, int N_)
-{
+RegionList::RegionList(int maxRegions_, int L_, int N_) {
 
-	//Obtain maximum number of regions that can be
-	//defined by user
-	if((maxRegions = maxRegions_) <= 0)
-		ErrorHandler("RegionList", "Maximum number of regions is zero or negative.", FATAL);
+  // Obtain maximum number of regions that can be
+  // defined by user
+  if ((maxRegions = maxRegions_) <= 0)
+    ErrorHandler("RegionList", "Maximum number of regions is zero or negative.",
+                 FATAL);
 
-	//Obtain dimension of data set being classified by
-	//region list class
-	if((N = N_) <= 0)
-		ErrorHandler("RegionList", "Dimension is zero or negative.", FATAL);
+  // Obtain dimension of data set being classified by
+  // region list class
+  if ((N = N_) <= 0)
+    ErrorHandler("RegionList", "Dimension is zero or negative.", FATAL);
 
-	//Obtain length of input data set...
-	if((L = L_) <= 0)
-		ErrorHandler("RegionList", "Length of data set is zero or negative.", FATAL);
+  // Obtain length of input data set...
+  if ((L = L_) <= 0)
+    ErrorHandler("RegionList", "Length of data set is zero or negative.",
+                 FATAL);
 
-	//Allocate memory for index table
-	if(!(indexTable = new int [L]))
-		ErrorHandler("RegionList", "Not enough memory.", FATAL);
+  // Allocate memory for index table
+  if (!(indexTable = new int[L]))
+    ErrorHandler("RegionList", "Not enough memory.", FATAL);
 
-	//Allocate memory for region list array
-	if(!(regionList = new REGION [maxRegions]))
-		ErrorHandler("RegionList", "Not enough memory.", FATAL);
+  // Allocate memory for region list array
+  if (!(regionList = new REGION[maxRegions]))
+    ErrorHandler("RegionList", "Not enough memory.", FATAL);
 
-	//Initialize region list...
-	numRegions		= freeRegion = 0;
+  // Initialize region list...
+  numRegions = freeRegion = 0;
 
-	//Initialize indexTable
-	freeBlockLoc	= 0;
+  // Initialize indexTable
+  freeBlockLoc = 0;
 
-	//done.
-	return;
-
+  // done.
+  return;
 }
 
 /*******************************************************/
@@ -110,19 +111,18 @@ RegionList::RegionList(int maxRegions_, int L_, int N_)
 /*        oyed.                                        */
 /*******************************************************/
 
-RegionList::~RegionList( void )
-{
-	//de-allocate memory...
-	delete [] regionList;
-	delete [] indexTable;
+RegionList::~RegionList(void) {
+  // de-allocate memory...
+  delete[] regionList;
+  delete[] indexTable;
 
-	//done.
-	return;
+  // done.
+  return;
 }
 
-  /*/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\*/
-  /***  Region List Manipulation  ***/
-  /*\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/*/
+/*/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\*/
+/***  Region List Manipulation  ***/
+/*\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/*/
 
 /*******************************************************/
 /*Add Region                                           */
@@ -144,47 +144,49 @@ RegionList::~RegionList( void )
 /*        added to the region list.                    */
 /*******************************************************/
 
-void RegionList::AddRegion(int label, int pointCount, int *indeces)
-{
+void RegionList::AddRegion(int label, int pointCount, int *indeces) {
 
-	//make sure that there is enough room for this new region 
-	//in the region list array...
-	if(numRegions >= maxRegions)
-		ErrorHandler("AddRegion", "Not enough memory allocated.", FATAL);
+  // make sure that there is enough room for this new region
+  // in the region list array...
+  if (numRegions >= maxRegions)
+    ErrorHandler("AddRegion", "Not enough memory allocated.", FATAL);
 
-	//make sure that label is positive and point Count > 0...
-	if((label < 0)||(pointCount <= 0))
-		ErrorHandler("AddRegion", "Label is negative or number of points in region is invalid.", FATAL);
+  // make sure that label is positive and point Count > 0...
+  if ((label < 0) || (pointCount <= 0))
+    ErrorHandler("AddRegion",
+                 "Label is negative or number of points in region is invalid.",
+                 FATAL);
 
-	//make sure that there is enough memory in the indexTable
-	//for this region...
-	if((freeBlockLoc + pointCount) > L)
-		ErrorHandler("AddRegion", "Adding more points than what is contained in data set.", FATAL);
+  // make sure that there is enough memory in the indexTable
+  // for this region...
+  if ((freeBlockLoc + pointCount) > L)
+    ErrorHandler("AddRegion",
+                 "Adding more points than what is contained in data set.",
+                 FATAL);
 
-	//place new region into region list array using
-	//freeRegion index
-	regionList[freeRegion].label		= label;
-	regionList[freeRegion].pointCount	= pointCount;
-	regionList[freeRegion].region		= freeBlockLoc;
+  // place new region into region list array using
+  // freeRegion index
+  regionList[freeRegion].label = label;
+  regionList[freeRegion].pointCount = pointCount;
+  regionList[freeRegion].region = freeBlockLoc;
 
-	//copy indeces into indexTable using freeBlock...
-	int i;
-	for(i = 0; i < pointCount; i++)
-		indexTable[freeBlockLoc+i] = indeces[i];
+  // copy indeces into indexTable using freeBlock...
+  int i;
+  for (i = 0; i < pointCount; i++)
+    indexTable[freeBlockLoc + i] = indeces[i];
 
-	//increment freeBlock to point to the next free
-	//block
-	freeBlockLoc	+= pointCount;
+  // increment freeBlock to point to the next free
+  // block
+  freeBlockLoc += pointCount;
 
-	//increment freeRegion to point to the next free region
-	//also, increment numRegions to indicate that another
-	//region has been added to the region list
-	freeRegion++;
-	numRegions++;
+  // increment freeRegion to point to the next free region
+  // also, increment numRegions to indicate that another
+  // region has been added to the region list
+  freeRegion++;
+  numRegions++;
 
-	//done.
-	return;
-
+  // done.
+  return;
 }
 
 /*******************************************************/
@@ -196,20 +198,18 @@ void RegionList::AddRegion(int label, int pointCount, int *indeces)
 /*      - the region list has been reset.              */
 /*******************************************************/
 
-void RegionList::Reset( void )
-{
+void RegionList::Reset(void) {
 
-	//reset region list
-	freeRegion = numRegions = freeBlockLoc = 0;
+  // reset region list
+  freeRegion = numRegions = freeBlockLoc = 0;
 
-	//done.
-	return;
-
+  // done.
+  return;
 }
 
-  /*/\/\/\/\/\/\/\/\/\/\*/
-  /*  Query Region List */
-  /*\/\/\/\/\/\/\/\/\/\/*/
+/*/\/\/\/\/\/\/\/\/\/\*/
+/*  Query Region List */
+/*\/\/\/\/\/\/\/\/\/\/*/
 
 /*******************************************************/
 /*Get Number Regions                                   */
@@ -221,10 +221,9 @@ void RegionList::Reset( void )
 /*        list is returned.                            */
 /*******************************************************/
 
-int	RegionList::GetNumRegions( void )
-{
-	// return region count
-	return numRegions;
+int RegionList::GetNumRegions(void) {
+  // return region count
+  return numRegions;
 }
 
 /*******************************************************/
@@ -240,10 +239,9 @@ int	RegionList::GetNumRegions( void )
 /*        specified by regionNum has been returned.    */
 /*******************************************************/
 
-int	RegionList::GetLabel(int regionNum)
-{
-	//return the label of a specified region
-	return regionList[regionNum].label;
+int RegionList::GetLabel(int regionNum) {
+  // return the label of a specified region
+  return regionList[regionNum].label;
 }
 
 /*******************************************************/
@@ -260,10 +258,9 @@ int	RegionList::GetLabel(int regionNum)
 /*        is returned.                                 */
 /*******************************************************/
 
-int RegionList::GetRegionCount(int regionNum)
-{
-	//return the region count of a specified region
-	return regionList[regionNum].pointCount;
+int RegionList::GetRegionCount(int regionNum) {
+  // return the region count of a specified region
+  return regionList[regionNum].pointCount;
 }
 
 /*******************************************************/
@@ -280,21 +277,21 @@ int RegionList::GetRegionCount(int regionNum)
 /*        Num are returned.                            */
 /*******************************************************/
 
-int *RegionList::GetRegionIndeces(int regionNum)
-{
-	//return point indeces using regionNum
-	return &indexTable[regionList[regionNum].region];
+int *RegionList::GetRegionIndeces(int regionNum) {
+  // return point indeces using regionNum
+  return &indexTable[regionList[regionNum].region];
 }
 
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@     PRIVATE METHODS     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@     PRIVATE METHODS
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 
-  /*/\/\/\/\/\/\/\/\/\/\/\*/
-  /*  Class Error Handler */
-  /*\/\/\/\/\/\/\/\/\/\/\/*/
+/*/\/\/\/\/\/\/\/\/\/\/\*/
+/*  Class Error Handler */
+/*\/\/\/\/\/\/\/\/\/\/\/*/
 
 /*******************************************************/
 /*Error Handler                                        */
@@ -317,23 +314,23 @@ int *RegionList::GetRegionIndeces(int regionNum)
 /*        the calling function.                        */
 /*******************************************************/
 
-void RegionList::ErrorHandler(char *functName, char* errmsg, ErrorType status)
-{
+void RegionList::ErrorHandler(const char *functName, const char *errmsg,
+                              ErrorType status) {
 
-	//flag error message on behalf of calling function, error format
-	//specified by the error status...
-	if(status == NONFATAL)
-		fprintf(stderr, "\n%s Error: %s\n", functName, errmsg);
-	else
-	{
-		fprintf(stderr, "\n%s Fatal Error: %s\n\nAborting Program.\n\n", functName, errmsg);
-		exit(1);
-	}
-
+  // flag error message on behalf of calling function, error format
+  // specified by the error status...
+  if (status == NONFATAL)
+    fprintf(stderr, "\n%s Error: %s\n", functName, errmsg);
+  else {
+    fprintf(stderr, "\n%s Fatal Error: %s\n\nAborting Program.\n\n", functName,
+            errmsg);
+    exit(1);
+  }
 }
 
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END OF CLASS DEFINITION @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END OF CLASS DEFINITION
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/

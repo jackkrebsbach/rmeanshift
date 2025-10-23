@@ -1,4 +1,4 @@
-CXX_STD = CXX11
+CXX_STD = CXX14
 
 SOURCES = meanshift.cpp RcppExports.cpp $(wildcard core/*.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)
