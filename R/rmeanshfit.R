@@ -17,7 +17,7 @@ meanshift <- function(img, radiusS = 5, radiusR = 4.5, minDensity = 200, speedUp
     height <- dim(img)[1]
     width <- dim(img)[2]
     channels <- dim(img)[3]
-    img_arr <- as.array(img)
+    img_arr <- terra::as.array(img)
   } else if (is.array(img) && length(dim(img)) == 3) {
     height <- dim(img)[1]
     width <- dim(img)[2]
@@ -35,10 +35,12 @@ meanshift <- function(img, radiusS = 5, radiusR = 4.5, minDensity = 200, speedUp
 
   result_arr <- array(result, dim = c(channels, width, height))
   result_arr <- aperm(result_arr, c(3,2,1))
-  result_arr <- result_arr[height:1, , , drop = FALSE]
 
   if (inherits(img, "SpatRaster")) {
-    return(rast(result_arr))
+    result_rast <- terra::rast(result_arr)
+    terra::ext(result_rast) <- terra::ext(img)
+    terra::crs(result_rast) <- terra::crs(img)
+    return(result_rast)
   } else {
     return(result_arr)
   }
