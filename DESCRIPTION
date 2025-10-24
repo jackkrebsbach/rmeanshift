@@ -1,0 +1,17 @@
+Package: rmeanshift
+Type: Package
+Title: Mean Shift Image Segmentation for R
+Version: 0.1.0
+Author: Jack Krebsbach
+Maintainer: Jack Krebsbach <krebsbachjackson@gmail.com>
+Description: Provides mean shift image segmentation functionality in R using Rcpp.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: Rcpp
+LinkingTo: Rcpp
+RoxygenNote: 7.3.3
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
