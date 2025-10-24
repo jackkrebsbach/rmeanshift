@@ -2,12 +2,19 @@
 % Please edit documentation in R/rmeanshfit.R
 \name{meanshift}
 \alias{meanshift}
-\title{Mean Shift Segmentation on Raster or Array Images}
+\title{Mean Shift Segmentation image data}
 \usage{
-meanshift(img, radiusS = 5, radiusR = 4.5, minDensity = 200, speedUp = 2)
+meanshift(
+  img,
+  radiusS = 5,
+  radiusR = 4.5,
+  minDensity = 200,
+  speedUp = 2,
+  scale = TRUE
+)
 }
 \arguments{
-\item{img}{A `terra::rast` object or 3D array [height, width, channels].}
+\item{img}{A 3D array [height, width, channels] representing a color image}
 
 \item{radiusS}{Numeric scalar. Spatial bandwidth. Default 5.}
 
@@ -16,11 +23,13 @@ meanshift(img, radiusS = 5, radiusR = 4.5, minDensity = 200, speedUp = 2)
 \item{minDensity}{Integer. Minimum density for clusters. Default 200.}
 
 \item{speedUp}{Integer. Optional speed-up level. Default 2.}
+
+\item{scale}{Boolean. Scales image values to 0-255. Default TRUE}
 }
 \value{
-If input is `terra::rast`, returns segmented raster; if array, returns 3D array.
+Returns an array of the same shape as the input
 }
 \description{
 Performs mean shift segmentation on multi-channel images.
-Input can be a `terra::rast` or a 3D array [height, width, channels].
+Input can be a 3D array [height, width, channels]
 }
