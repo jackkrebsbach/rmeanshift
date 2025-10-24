@@ -1,6 +1,7 @@
 # Meanshift: a robust approach toward feature space analysis.
 
-This package provides an R interface to the Mean Shift algorithm implemented in C++ by D. Comaniciu and P. Meer.
+This package provides an R interface to the Mean Shift algorithm implemented in C++ by D. Comaniciu and P. Meer. The input must be a 3D array with last dimension representing the number of channels/bands. The output is an array of the same dimensions as the input.
+See examples below.
 
 | Original                 | Segmented                           |
 |--------------------------|-------------------------------------|
@@ -11,8 +12,27 @@ The original paper can be found at: <https://ieeexplore.ieee.org/document/100023
 The original C++ code can be found at: <https://cecas.clemson.edu/~stb/blepo/>
 
 ## Example
+### Terra
+```r
+library(devtools)
+library(Rcpp)
 
-``` r
+if (!requireNamespace("rmeanshift", quietly = TRUE)) {
+ devtools::install_github("jackkrebsbach/rmeanshift")
+}
+
+library(rmeanshift)
+library(terra)
+
+img <- terra::rast("example.jpg")
+img_array <- terra::as.array(img)
+segmented <- rmeanshift::meanshift(img_array, radiusS = 5, radiusR = 4.5, minDensity = 300, speedUp = 2)
+img_segmented <- terra::rast(segmented)
+terra::plotRGB(img_segmented)
+```
+
+### Imager 
+```r
 library(devtools)
 library(terra)
 library(Rcpp)
@@ -22,10 +42,33 @@ if (!requireNamespace("rmeanshift", quietly = TRUE)) {
 }
 
 library(rmeanshift)
+library(imager)
 
-img <- terra::rast("example.jpg")
+img <- imager::load.image("example.jpg")
+img_array <- as.array(img)[, , 1, ]
+segmented <- rmeanshift::meanshift(img_array, radiusS = 5, radiusR = 4.5, minDensity = 300, speedUp = 2)
+img_segmented <- as.cimg(segmented)
+plot(img_segmented)
+```
 
-result <- rmeanshift::meanshift(img, radiusS =  5, radiusR = 4.5, minDensity =  200)
+### Magick
+```r
+library(devtools)
+library(terra)
+library(Rcpp)
 
-terra::plotRGB(result)
+if (!requireNamespace("rmeanshift", quietly = TRUE)) {
+ devtools::install_github("jackkrebsbach/rmeanshift")
+}
+
+library(rmeanshift)
+library(magick)
+
+img <- magick::image_read("example.jpg")
+img_array <- as.numeric(img[[1]])
+segmented <- rmeanshift::meanshift(img_array, radiusS = 5, radiusR = 4.5, minDensity = 300, speedUp = 2)
+img_segmented <- segmented[dim(segmented)[1]:1, , ] / 255 # Flip and scale image
+img_segmented <- magick::image_read(as.raster(img_segmented))
+plot(img_segmented)
+
 ```

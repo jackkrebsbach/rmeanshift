@@ -1,47 +1,46 @@
-#' Mean Shift Segmentation on Raster or Array Images
+#' Mean Shift Segmentation image data
 #'
 #' Performs mean shift segmentation on multi-channel images.
-#' Input can be a `terra::rast` or a 3D array [height, width, channels].
+#' Input can be a 3D array [height, width, channels]
 #'
-#' @param img A `terra::rast` object or 3D array [height, width, channels].
+#' @param img A 3D array [height, width, channels] representing a color image
 #' @param radiusS Numeric scalar. Spatial bandwidth. Default 5.
 #' @param radiusR Numeric scalar. Range/color bandwidth. Default 4.5.
 #' @param minDensity Integer. Minimum density for clusters. Default 200.
 #' @param speedUp Integer. Optional speed-up level. Default 2.
+#' @param scale Boolean. Scales image values to 0-255. Default TRUE
 #'
-#' @return If input is `terra::rast`, returns segmented raster; if array, returns 3D array.
+#' @return Returns an array of the same shape as the input
 #' @export
-meanshift <- function(img, radiusS = 5, radiusR = 4.5, minDensity = 200, speedUp = 2) {
+meanshift <- function(img, radiusS = 5, radiusR = 4.5, minDensity = 200, speedUp = 2, scale = TRUE) {
 
-  if (inherits(img, "SpatRaster")) {
-    height <- dim(img)[1]
-    width <- dim(img)[2]
-    channels <- dim(img)[3]
-    img_arr <- terra::as.array(img)
-  } else if (is.array(img) && length(dim(img)) == 3) {
-    height <- dim(img)[1]
-    width <- dim(img)[2]
-    channels <- dim(img)[3]
-    img_arr <- img
-  } else {
-    stop("Input must be a terra::rast or a 3D array [height, width, channels].")
+  if(!length(dim(img_array)) == 3){
+    warning("Input must be a 3D array with the last dimension representing the number of channels.")
   }
 
-  img_arr <- img_arr[height:1, , , drop = FALSE]
-  img_arr <- aperm(img_arr, c(3,2,1))
-  image_flat <- as.vector(img_arr)
+  height <- dim(img)[1]
+  width <- dim(img)[2]
+  channels <- dim(img)[3]
+
+  img <- img[height:1, , , drop = FALSE]
+  img <- aperm(img, c(3,2,1))
+
+  # Core segmentation code requires values scaled between 0-255
+  if(scale){
+    for (i in 1:dim(img)[1]) {
+      band_min <- min(img[i, , ])
+      band_max <- max(img[i, , ])
+      img[i, , ] <- (img[i, , ] - band_min) / (band_max - band_min) * 255
+    }
+  }
+
+  image_flat <- as.vector(img)
 
   result <- rmeanshift::meanshift_(image_flat, width, height, channels, radiusS, radiusR, minDensity, speedUp)
 
-  result_arr <- array(result, dim = c(channels, width, height))
-  result_arr <- aperm(result_arr, c(3,2,1))
+  result <- array(result, dim = c(channels, width, height))
+  result <- aperm(result, c(3,2,1))
 
-  if (inherits(img, "SpatRaster")) {
-    result_rast <- terra::rast(result_arr)
-    terra::ext(result_rast) <- terra::ext(img)
-    terra::crs(result_rast) <- terra::crs(img)
-    return(result_rast)
-  } else {
-    return(result_arr)
-  }
+  return(result)
+
 }
