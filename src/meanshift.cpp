@@ -18,8 +18,23 @@ NumericVector meanshift_(NumericVector array, int width, int height, int channel
   msImageProcessor imageSegmenter;
   SpeedUpLevel speedUpLevel;
 
+  switch(speedUp)
+  {
+  case 0:
+    speedUpLevel = NO_SPEEDUP;
+    break;
+  case 1:
+    speedUpLevel = MED_SPEEDUP;
+    break;
+  case 2:
+    speedUpLevel = HIGH_SPEEDUP;
+    break;
+  default:
+    speedUpLevel = HIGH_SPEEDUP;
+  }
+
   imageSegmenter.DefineImage(imageData, COLOR, height, width);
-  imageSegmenter.Segment(radiusS, radiusR, minDensity, NO_SPEEDUP);
+  imageSegmenter.Segment(radiusS, radiusR, minDensity, speedUpLevel);
 
   unsigned char* segmentedData = new unsigned char[height * width * channels];
   imageSegmenter.GetResults(segmentedData);
