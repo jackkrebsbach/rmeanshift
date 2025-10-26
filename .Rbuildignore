@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^doc$
 ^Meta$
+example.jpg
+example_segmented.jpg
+example.R

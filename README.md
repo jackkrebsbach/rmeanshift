@@ -14,14 +14,16 @@ The original C++ code can be found at: <https://cecas.clemson.edu/~stb/blepo/>
 
 The **Rcpp** R package is required to install **rmeanshift**.
 
+### Devtools
 ``` r
 library(Rcpp)
-
-## Devtools
 library(devtools)
 devtools::install_github("jackkrebsbach/rmeanshift")
+```
 
-## Remotes
+### Remotes
+```r
+library(Rcpp)
 library(remotes)
 remotes::install_github("jackkrebsbach/rmeanshift")
 ```
